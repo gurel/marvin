@@ -1,7 +1,7 @@
 /* eslint func-names: 0 */
 import { expect } from 'chai';
 import Command from '../app/command/Command';
-import CommandManager from '../command';
+import CommandManager from '../app/command';
 import commanderrors from '../app/command/errors';
 
 describe('Command', () => {

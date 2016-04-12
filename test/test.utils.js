@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import fs from 'fs';
 import rimraf from 'rimraf';
 import path from 'path';
-import { copyDirectory, copyDirectorySync, SettingsStore } from '../utils';
+import { copyDirectory, copyDirectorySync, SettingsStore } from '../app/utils';
 import async from 'async';
 
 const testDir1 = './test_dir';
@@ -16,7 +16,7 @@ describe('utils.settings', () => {
     settings = new SettingsStore('./foo.json');
   });
   it('should be singleton', () => {
-    expect(require('../utils').settings).to.equal(require('../utils').settings);
+    expect(require('../app/utils').settings).to.equal(require('../app/utils').settings);
   });
   it('should write settings', () => {
     settings.set('foo', 'bar');
