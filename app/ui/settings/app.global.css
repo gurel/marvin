@@ -1,0 +1,25 @@
+body {
+  position: relative;
+  color: black;
+  height: 100vh;
+  width: 100vw;
+  margin: 0px;
+  font-family: Arial, Helvetica, Helvetica Neue;
+  overflow: hidden;
+}
+
+li {
+  list-style: none;
+}
+
+a {
+  color: black;
+  opacity: .75;
+  text-decoration: none;
+}
+
+a:hover {
+  opacity: 1;
+  text-decoration: none;
+  cursor: pointer;
+}

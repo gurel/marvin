@@ -1,0 +1,72 @@
+.container {
+	background-color: #FFF;
+	height: 100vh;
+	width: 100vw;
+}
+.tabContainer {
+	display: block;
+}
+.contentContainer {
+	display:block;
+	width: 100%;
+  padding: 0 0 0 10px;
+}
+.buttonsContainer {
+  width: 100vw;
+  height: 40px;
+  background-color: #EFEFEF;
+  bottom: 0px;
+  margin: 0px;
+  position: fixed;
+  text-align: right;
+  box-sizing: border-box;
+  padding: 5px;
+}
+.closeButton {
+}
+.btn {
+  display: inline-block;
+  height: 25px;
+  line-height: 25px;
+  background-color: #999;
+  border-radius: 5px;
+  margin-left: 5px;
+  padding: 2px 5px 2px 5px;
+}
+.btn:hover {
+  background-color: #999;
+}
+.btn_success {
+  background-color: lightgreen;
+}
+.btn_success:hover {
+  background-color: green;
+}
+.tabs {
+
+}
+.tabList {
+  border-bottom: 1px solid #aaa;
+  margin: 0 0 10px;
+  padding: 0;
+  padding-left: 5px;
+  padding-top: 2px;
+}
+.tab {
+  display: inline-block;
+  border: 1px solid transparent;
+  border-bottom: none;
+  bottom: -1px;
+  position: relative;
+  list-style: none;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+.tabSelected {
+  background: #fff;
+  border-color: #aaa;
+  color: black;
+  border-radius: 5px 5px 0 0;
+  -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
+}
