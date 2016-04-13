@@ -54,15 +54,22 @@ class SoxRecorder extends EventEmitter {
     this.bat.on('exit', (code) => {
       console.log(`Child exited with code ${code}`);
       if (this.recordstarted) {
-        this.emit('recordstop', this.filename);
         this.recordstarted = false;
+        this.emit('recordstop', this.filename);
+      } else {
+        this.isRecording = false;
+        this.start();
       }
-      this.isRecording = false;
       this.emit('exit');
     });
   }
   stop() {
-    this.bat.stderr.removeEventListeners();
+    if (this.bat) {
+      this.bat.stderr.removeAllListeners();
+      this.bat.removeAllListeners();
+      this.bat.kill('SIGHUP');
+      delete this.bat;
+    }
     if (this.recordstarted) {
       this.emit('exit');
     }

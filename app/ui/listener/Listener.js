@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import style from './Listener.css';
 import { ipcRenderer } from 'electron';
-import listeners from './listeners';
+import * as listeners from './listeners';
 import classNames from 'classnames';
 
 export default class Listener extends Component {

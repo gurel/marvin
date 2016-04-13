@@ -2,6 +2,7 @@ import electron from 'electron';
 import ListenerBase from './ListenerBase';
 import Command from '../../../command/Command';
 import { SoxRecorder } from './util';
+import fs from 'fs';
 
 const request = require('request');
 
@@ -12,7 +13,11 @@ class SoxWitAI extends ListenerBase {
   constructor() {
     super();
     this.recorder = new SoxRecorder(electron.remote.app.getPath('userData'));
-    this.recorder.on('recordstop', this.onRecognitionResult.bind(this));
+    this.recorder.on('recordstop', (filename) => {
+      this.emit('speech_end');
+      this.onRecognitionResult(filename);
+    });
+    this.recorder.on('recordstart', () => { this.emit('speech_start'); });
   }
 
   start() {
@@ -22,40 +27,36 @@ class SoxWitAI extends ListenerBase {
     this.recorder.stop();
   }
 
-  onRecognitionResult(event) {
-    console.log('Recognition result', event);
-    const text = event.results[event.results.length - 1][0].transcript.toLowerCase().trim();
-    console.log(text);
-    if (!event.results[event.results.length - 1].isFinal) {
-      console.log(text);
-    } else {
-      console.log('Final', text);
-      this.recognition.stop();
-      this.emit('working');
-      request(
-        {
-          method: 'GET',
-          uri: `https://api.wit.ai/message?v=20160317&q=${encodeURIComponent(text)}`,
-          headers: { Authorization: `Bearer ${WIT_AI_TOKEN}` },
-          gzip: true
+  onRecognitionResult(filename) {
+    console.log(`Final ${filename}`);
+    this.recorder.stop();
+    this.emit('working');
+    fs.createReadStream(filename).pipe(request(
+      {
+        method: 'POST',
+        uri: 'https://api.wit.ai/speech?v=20141022',
+        headers: {
+          Authorization: `Bearer ${WIT_AI_TOKEN}`
         },
-        (error, response, body) => {
-          let intentThreshold = 0.5;
-          const responseObj = JSON.parse(body);
-          console.log(responseObj);
+        gzip: true
+      },
+      (error, response, body) => {
+        let intentThreshold = 0.5;
+        const responseObj = JSON.parse(body);
+        console.log(responseObj);
 
-          if (responseObj._text.indexOf('marvin') > -1) {
-            intentThreshold -= 0.3;
-          }
-          for (let i = 0; i < responseObj.outcomes.length; i++) {
-            const outcome = responseObj.outcomes[i];
-            if (outcome.confidence > intentThreshold) {
-              console.log('Work for', outcome.intent);
-              this.emit('workdone', new Command(outcome.intent, outcome._text, outcome.entities));
-            }
+        if (responseObj._text.indexOf('marvin') > -1) {
+          intentThreshold -= 0.3;
+        }
+        for (let i = 0; i < responseObj.outcomes.length; i++) {
+          const outcome = responseObj.outcomes[i];
+          if (outcome.confidence > intentThreshold) {
+            console.log('Work for', outcome.intent);
+            this.emit('workdone', new Command(outcome.intent, outcome._text, outcome.entities));
           }
         }
-      );
-    }
+        this.recorder.start();
+      }
+    ));
   }
 }
